@@ -1,42 +1,14 @@
-import { useState } from "react";
-
-const data = [
-  {
-    canonical: "Autonomy",
-    cognate: "Education",
-    tradition: "Liberal Humanism",
-    justification:
-      "Education enables informed agency and moral reasoning. Central to AI literacy, capacity-building, and ethical empowerment strategies.",
-    notes: "Autonomy Theory, Enlightenment Moral Theory, Virtual Development Models",
-  },
-  {
-    canonical: "Autonomy",
-    cognate: "Freedom",
-    tradition: "Deontological Ethics (rules, duties)",
-    justification:
-      "Freedom underpins autonomy in AI ethics—especially in user consent, self-determination, and freedom from manipulation.",
-    notes: "Human rights frameworks, liberal democratic theory",
-  },
-  {
-    canonical: "Beneficence",
-    cognate: "Compassion",
-    tradition: "Care Ethics",
-    justification:
-      "Compassion is a foundational emotional driver in benevolent AI systems.",
-    notes: "Christian mercy, Buddhist compassion, Islamic rahma",
-  },
-  {
-    canonical: "Beneficence",
-    cognate: "Empathy",
-    tradition: "Humanistic Psychology",
-    justification:
-      "Enables affective engagement in AI, guiding alignment with human emotional states.",
-    notes: "",
-  }
-];
+import { useState, useEffect } from "react";
 
 export default function CognatesBrowser() {
+  const [data, setData] = useState([]);
   const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    fetch("/cognates.json")
+      .then((res) => res.json())
+      .then((json) => setData(json));
+  }, []);
 
   const filtered = data.filter(
     (item) =>
@@ -86,7 +58,7 @@ export default function CognatesBrowser() {
                 {row.justification}
               </td>
               <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>
-                {row.notes}
+                {row.notes || ""}
               </td>
             </tr>
           ))}
