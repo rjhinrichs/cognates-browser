@@ -5,15 +5,24 @@ export default function CognatesBrowser() {
   const [data, setData] = useState([]);
   const [query, setQuery] = useState("");
 
-  useEffect(() => {
-    fetch("/cognates.json")
-      .then((res) => res.json())
-      .then((json) => setData(json))
-      .catch((err) => {
-        console.error("Failed to fetch cognates.json:", err);
-        setData([]); // still show welcome if it fails
-      });
-  }, []);
+useEffect(() => {
+  fetch("/cognates.json")
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`HTTP error ${res.status}`);
+      }
+      return res.json();
+    })
+    .then((json) => {
+      console.log("Cognates loaded:", json.length, "records");
+      setData(json);
+    })
+    .catch((err) => {
+      console.error("Error fetching cognates.json:", err);
+      setData([]); // triggers welcome fallback
+    });
+}, []);
+
 
   const filtered = data.filter(
     (item) =>
