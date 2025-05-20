@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import WelcomeMessage from "./WelcomeMessage";
 
 export default function CognatesBrowser() {
   const [data, setData] = useState([]);
@@ -7,14 +8,18 @@ export default function CognatesBrowser() {
   useEffect(() => {
     fetch("/cognates.json")
       .then((res) => res.json())
-      .then((json) => setData(json));
+      .then((json) => setData(json))
+      .catch((err) => {
+        console.error("Failed to fetch cognates.json:", err);
+        setData([]); // still show welcome if it fails
+      });
   }, []);
 
   const filtered = data.filter(
     (item) =>
-      item.canonical.toLowerCase().includes(query.toLowerCase()) ||
-      item.cognate.toLowerCase().includes(query.toLowerCase()) ||
-      item.tradition.toLowerCase().includes(query.toLowerCase())
+      item.canonical?.toLowerCase().includes(query.toLowerCase()) ||
+      item.cognate?.toLowerCase().includes(query.toLowerCase()) ||
+      item.tradition?.toLowerCase().includes(query.toLowerCase())
   );
 
   return (
@@ -43,25 +48,23 @@ export default function CognatesBrowser() {
           </tr>
         </thead>
         <tbody>
-          {filtered.map((row, idx) => (
-            <tr key={idx}>
-              <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>
-                {row.canonical}
-              </td>
-              <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>
-                {row.cognate}
-              </td>
-              <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>
-                {row.tradition}
-              </td>
-              <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>
-                {row.justification}
-              </td>
-              <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>
-                {row.notes || ""}
+          {filtered.length === 0 ? (
+            <tr>
+              <td colSpan="5">
+                <WelcomeMessage />
               </td>
             </tr>
-          ))}
+          ) : (
+            filtered.map((row, idx) => (
+              <tr key={idx}>
+                <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>{row.canonical}</td>
+                <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>{row.cognate}</td>
+                <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>{row.tradition}</td>
+                <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>{row.justification}</td>
+                <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>{row.notes || ""}</td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>
