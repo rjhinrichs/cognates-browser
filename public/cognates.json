@@ -227,7 +227,7 @@
     "canonical": "Christian \nVirtue Ethics",
     "cognate": "Humility",
     "tradition": "NRBC Behavioral Virtue Layer",
-    "justification": null,
+    "justification": "",
     "notes": "Industry, GOv"
   },
   {
@@ -305,7 +305,7 @@
     "cognate": "Meekness",
     "tradition": "Dignity",
     "justification": "Meekness associated with dignifified constraint",
-    "notes": null
+    "notes": ""
   },
   {
     "canonical": "Religius, Deontological",
@@ -360,9 +360,7 @@
     "canonical": "Christian\nGlobal Ethics",
     "cognate": "Peace / Peacemaking",
     "tradition": "Collaboration, Non-Maleficence",
-    "justification": "Appears in foundationalಸ
-
-ystematic and deliberate process of evaluating ethical dilemmas. Appears in AI agent design, decision tree logic, and value-sensitive design for explainability and alignment.",
+    "justification": "Appears in foundational ystematic and deliberate process of evaluating ethical dilemmas. Appears in AI agent design, decision tree logic, and value-sensitive design for explainability and alignment.",
     "notes": "Academia"
   },
   {
