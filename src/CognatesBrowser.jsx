@@ -1,81 +1,55 @@
-import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import WelcomeMessage from "./WelcomeMessage";
+import { useState, useEffect } from "react";
 
 export default function CognatesBrowser() {
   const [data, setData] = useState([]);
   const [query, setQuery] = useState("");
 
-useEffect(() => {
-  fetch("/cognates.json")
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error(`HTTP error ${res.status}`);
-      }
-      return res.json();
-    })
-    .then((json) => {
-      console.log("Cognates loaded:", json.length, "records");
-      setData(json);
-    })
-    .catch((err) => {
-      console.error("Error fetching cognates.json:", err);
-      setData([]); // triggers welcome fallback
-    });
-}, []);
+  useEffect(() => {
+    fetch("/cognates.json")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        return res.json();
+      })
+      .then(setData)
+      .catch((err) => {
+        console.error("Error fetching cognates.json:", err);
+        setData([]);
+      });
+  }, []);
 
-
-  const filtered = data.filter(
-    (item) =>
-      item.canonical?.toLowerCase().includes(query.toLowerCase()) ||
-      item.cognate?.toLowerCase().includes(query.toLowerCase()) ||
-      item.tradition?.toLowerCase().includes(query.toLowerCase())
+  const filtered = data.filter((item) =>
+    [item.canonical, item.cognate, item.tradition]
+      .join(" ")
+      .toLowerCase()
+      .includes(query.toLowerCase())
   );
 
   return (
-    <div style={{ padding: "1rem", fontFamily: "Arial, sans-serif" }}>
-      <h1 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>Cognates Browser</h1>
-      <input
-        type="text"
+    <div className="p-4 space-y-4">
+      <h1 className="text-2xl font-semibold">Cognates Browser</h1>
+      <Input
         placeholder="Search by Value, Cognate, or Tradition"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        style={{
-          padding: "0.5rem",
-          width: "100%",
-          marginBottom: "1rem",
-          fontSize: "1rem",
-        }}
       />
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
-        <thead>
-          <tr>
-            <th>Canonical Value</th>
-            <th>Cognate</th>
-            <th>Tradition</th>
-            <th>Justification</th>
-            <th>Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filtered.length === 0 ? (
-            <tr>
-              <td colSpan="5">
-                <WelcomeMessage />
-              </td>
-            </tr>
-          ) : (
-            filtered.map((row, idx) => (
-              <tr key={idx}>
-                <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>{row.canonical}</td>
-                <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>{row.cognate}</td>
-                <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>{row.tradition}</td>
-                <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>{row.justification}</td>
-                <td style={{ border: "1px solid #ddd", padding: "0.5rem" }}>{row.notes || ""}</td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+      {filtered.length === 0 ? (
+        <WelcomeMessage />
+      ) : (
+        filtered.map((item, idx) => (
+          <Card key={idx} className="p-4">
+            <CardContent>
+              <p className="text-xl font-medium">{item.canonical}</p>
+              <p className="text-sm text-gray-500 italic mb-1">{item.tradition}</p>
+              <p className="mb-2">{item.justification}</p>
+              <p className="text-sm text-muted-foreground">Cognate: {item.cognate}</p>
+              {item.notes && <p className="text-xs mt-2 text-muted-foreground">{item.notes}</p>}
+            </CardContent>
+          </Card>
+        ))
+      )}
     </div>
   );
 }
